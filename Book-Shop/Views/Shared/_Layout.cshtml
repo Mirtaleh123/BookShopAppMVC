@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Ali_və_Nino_Kitab_Mağazası</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Ali_və_Nino_Kitab_Mağazası.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-white shadow">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold text-warning" asp-controller="Book" asp-action="Index">
+                    <img src="https://static.insales-cdn.com/r/XA2GG-fJxr0/rs:fill-down:100:100:1/q:100/plain/files/1/2841/119417625/original/Logo_3__1_.png@png" srcset="https://static.insales-cdn.com/r/XA2GG-fJxr0/rs:fill-down:100:100:1/q:100/plain/files/1/2841/119417625/original/Logo_3__1_.png@png 1x, https://static.insales-cdn.com/r/GZJ2ki1Df58/rs:fill-down:200:200:1/q:100/plain/files/1/2841/119417625/original/Logo_3__1_.png@png 2x" alt="Alinino.az online mağazası: kitab, elektronika, geyim, kosmetika, oyun və  oyuncaqları ucuz qiymətə al!" width="100" height="100">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <form method="get" asp-action="Index" class="d-flex">
+                            <input class="form-control me-2" type="search" name="search" placeholder="Kitab axtar..." />
+                            <button class="btn btn-outline-warning">Axtar</button>
+                        </form>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - Ali_və_Nino_Kitab_Mağazası - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

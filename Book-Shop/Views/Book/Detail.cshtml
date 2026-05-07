@@ -1,0 +1,11 @@
+﻿@model Book_Shop.Models.Book
+
+<h2>@Model.Title</h2>
+<p><strong>Müəllif:</strong> @Model.Author</p>
+<p><strong>Qiymət:</strong> @Model.Price AZN</p>
+
+<img src="@Model.ImageUrl" class="img-fluid" />
+
+<p>@Model.About</p>
+
+<a asp-action="Index" class="btn btn-secondary">Geri</a>
