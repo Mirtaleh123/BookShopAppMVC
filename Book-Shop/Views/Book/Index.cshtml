@@ -1,0 +1,53 @@
+﻿@model Book_Shop.ViewModels.PaginationList<Book_Shop.Models.Book>
+
+<h2>Kitablarım</h2>
+<p>Kitab sayı: @Model.TotalCount</p>
+
+<a asp-action="Create" class="btn btn-success mb-3">Yeni Kitab</a>
+
+
+
+<div class="row">
+    @foreach (var book in Model.Items)
+    {
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+
+                <a href="/Book/Detail/@book.Id">
+                    <img style="height:400px" src="@book.ImageUrl" class="card-img-top" />
+                </a>
+
+                <div class="card-body">
+                    <h5>@book.Title</h5>
+                    <p>@book.Author</p>
+                    <strong>@book.Price AZN</strong>
+
+                    <div class="mt-2">
+                        <a href="/Book/Detail/@book.Id" class="btn btn-info btn-sm">Ətraflı</a>
+
+                        <a href="/Book/Delete?id=@book.Id"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Silmək istədiyinə əminsən?')">
+                            Sil
+                        </a>
+
+                        <a asp-action="Edit" asp-route-id="@book.Id" class="btn btn-warning btn-sm">
+                            Yenilə
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+
+<div class="mt-4 text-center">
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        <a class="btn btn-sm @(i == Model.PageIndex ? "btn-warning" : "btn-outline-warning")"
+           href="@Url.Action("Index", new { page = i })">
+            @i
+        </a>
+    }
+</div>
