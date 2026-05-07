@@ -165,11 +165,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\99455\\source\\repos\\Book-Shop\\Book-Shop\\Book-Shop.csproj",
+      "projectUniqueName": "C:\\Users\\99455\\Desktop\\BookShopAppMVC\\Book-Shop\\Book-Shop.csproj",
       "projectName": "Book-Shop",
-      "projectPath": "C:\\Users\\99455\\source\\repos\\Book-Shop\\Book-Shop\\Book-Shop.csproj",
+      "projectPath": "C:\\Users\\99455\\Desktop\\BookShopAppMVC\\Book-Shop\\Book-Shop.csproj",
       "packagesPath": "C:\\Users\\99455\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\99455\\source\\repos\\Book-Shop\\Book-Shop\\obj\\",
+      "outputPath": "C:\\Users\\99455\\Desktop\\BookShopAppMVC\\Book-Shop\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
