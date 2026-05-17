@@ -8,10 +8,12 @@ using System.Reflection;
 using System.Xml.Linq;
 using static System.Reflection.Metadata.BlobBuilder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Book_Shop.Controllers
 {
- public class BookController : Controller
+    [Authorize] // 🔥 Bütün metodlara authentication tələbi əlavə edirik
+    public class BookController : Controller
         {
             private static readonly List<Book> books = new List<Book>
             {
