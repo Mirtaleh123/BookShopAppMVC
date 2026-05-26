@@ -8,6 +8,9 @@ using System.Reflection;
 using System.Xml.Linq;
 using static System.Reflection.Metadata.BlobBuilder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace Book_Shop.Controllers
 {
@@ -117,12 +120,8 @@ namespace Book_Shop.Controllers
                       };
 
 
-
-
-       
-
-            // LIST + SEARCH + PAGINATION
-            public IActionResult Index(string? search, int page = 1)
+        // LIST + SEARCH + PAGINATION
+        public IActionResult Index(string? search, int page = 1)
             {
                 const int pageSize = 8;
 

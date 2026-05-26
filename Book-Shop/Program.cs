@@ -1,11 +1,20 @@
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ✅ Bütün servisləri BUILD-dən ƏVVƏL qeydiyyatdan keçir
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+    });
 
+var app = builder.Build();  // ← Bundan sonra artıq Services-ə əlavə etmək olmaz
+
+// ✅ Middleware sırası düzgün olmalıdır
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -13,16 +22,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// 🔥 BURANI ƏLAVƏ ET
 app.UseStaticFiles();
-
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthentication();   // ← əvvəl Authentication
+app.UseAuthorization();    // ← sonra Authorization
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Book}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();
