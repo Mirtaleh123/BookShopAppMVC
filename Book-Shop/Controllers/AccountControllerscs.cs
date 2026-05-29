@@ -1,30 +1,38 @@
-﻿using Book_Shop.ViewModels;
+﻿using System.Security.Claims;
+using Book_Shop.Db;
+using Book_Shop.Enums;
+using Book_Shop.Models;
+using Book_Shop.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Book_Shop.Controllers
 {
+   
     public class AccountController : Controller
     {
+
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-   
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (model.Username == "admin" && model.Password == "1234")
+            var user = FakeDb.users.FirstOrDefault(x => x.Name == model.Username && x.Password == model.Password);
+
+            if (user != null)
             {
                 var claims = new List<Claim>
                 {
-                    new(ClaimTypes.Name, model.Username)
+                    new(ClaimTypes.Name, model.Username),
+                    new(ClaimTypes.Role, ((RoleEnum)user.RoleId).ToString())
                 };
 
                 var identity = new ClaimsIdentity(
