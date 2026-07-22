@@ -1,26 +1,36 @@
 ﻿@model Book_Shop.Models.Book
 
-<div class="container mt-4">
-    <h2 class="mb-3">Kitabı Yenilə</h2>
+@{
+    ViewData["Title"] = "Kitabı Yenilə";
+}
 
-    <form asp-action="Edit" method="post" class="needs-validation">
+<div class="edit-form-wrap">
+    <h1 class="edit-title">Kitabı Yenilə</h1>
+
+    <form asp-action="Edit" method="post">
         <input type="hidden" asp-for="Id" />
 
         <div class="mb-3">
-            <label asp-for="Title" class="form-label">Kitab adı</label>
-            <input asp-for="Title" class="form-control" placeholder="Kitab adı" />
+            <label asp-for="Title">Kitab adı</label>
+            <input asp-for="Title" class="form-control edit-input" />
+            <span asp-validation-for="Title" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Author" class="form-label">Müəllif</label>
-            <input asp-for="Author" class="form-control" placeholder="Müəllif" />
-        </div>
-        <div class="mb-3">
-            <label asp-for="Price" class="form-label">Müəllif</label>
-            <input asp-for="Price" class="form-control" placeholder="Qiymət(AZN)" />
+            <label asp-for="Author">Müəllif</label>
+            <input asp-for="Author" class="form-control edit-input" />
+            <span asp-validation-for="Author" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-warning">Yenilə</button>
-        <a asp-action="Index" class="btn btn-secondary">Geri</a>
+        <div class="mb-4">
+            <label asp-for="Price">Qiymət</label>
+            <input asp-for="Price" class="form-control edit-input" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="edit-actions">
+            <button type="submit" class="btn-update">Yenilə</button>
+            <a asp-action="Index" class="btn-back">Geri</a>
+        </div>
     </form>
 </div>

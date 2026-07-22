@@ -1,7 +1,13 @@
+using Book_Shop.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // ✅ Bütün servisləri BUILD-dən ƏVVƏL qeydiyyatdan keçir
 builder.Services.AddControllersWithViews();
 

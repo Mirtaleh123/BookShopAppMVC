@@ -1,22 +1,23 @@
+using Book_Shop.Data;
 using Book_Shop.Models;
 using Book_Shop.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Claims;
 using System.Xml.Linq;
 using static System.Reflection.Metadata.BlobBuilder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
 
 namespace Book_Shop.Controllers
 {
- public class BookController : Controller
-        {
-            private static readonly List<Book> books = new List<Book>
+    public class BookController : Controller
+    {
+        private static readonly List<Book> books = new List<Book>
             {
                  new Book
                   {
@@ -118,67 +119,106 @@ namespace Book_Shop.Controllers
                  ImageUrl ="https://static.insales-cdn.com/images/products/1/265/2904301833/UC_YOLDASH_qapaq.jpg",
                      About ="Hadisələr Birinci Dünya müharibəsindən sonrakı Almaniyada, sosial və iqtisadi böhran dövründə cərəyan edir. Müharibədən sağ çıxmış üç dost – Robert Lokamp, Otto Kester və Qottfrid Lens öz keçmişlərinin ağrısından, gələcəyə olan ümidsizlikdən qurtulmaq və həyatın mənasını yenidən tapmaq uğrunda mübarizə yaşayır. Onlar köhnə avtomobil təmiri sexində işləyir, kiçik sevinclər və dostluq sayəsində çətinliklərə sinə gərirlər. Lakin Robertin\r\nPatrisiya Holman adlı zərif və xəstə qıza aşiq olması dostların həyatını dəyişdirir... Böyük alman yazıçısı Erix Mariya Remarkın ötən əsrin 30-cu illərində qələmə aldığı “Üç yoldaş” romanı müəllifin ən duyğulu əsərlərindəndir. Romandakı sevgi və dostluq hekayəsi oxucunu\r\nhəm ağladır, həm düşündürür, həm də insan ruhunun müharibədən sonra da yaşamaq üçün necə dirəndiyini göstərir...." },
                       };
+        private readonly ApplicationDbContext _context;
 
+        public BookController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult TestLinq1()
+        {
+            var result = _context.Books
+                 .Where(b => b.Price < 10)
+                 .ToList();
+
+            return Json(result);
+        }
+        [HttpGet]
+        public IActionResult Baha5()
+        {
+            var baha5 = _context.Books
+                .OrderByDescending(b => b.Price)
+                .Take(5)
+                .ToList();
+
+            return Json(baha5);
+        }
+
+        [HttpGet]
+        public IActionResult SevgiAxtaris()
+        {
+            var axtaris = _context.Books
+                .Where(b => b.Title.Contains("sevgi"))
+                .ToList();
+
+            return Json(axtaris);
+        }
 
         // LIST + SEARCH + PAGINATION
         public IActionResult Index(string? search, int page = 1)
+        {
+            const int pageSize = 8;
+
+            var query = books.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                const int pageSize = 8;
+                search = search.ToLower();
 
-                var query = books.AsQueryable();
-
-                if (!string.IsNullOrWhiteSpace(search))
-                {
-                    search = search.ToLower();
-
-                    query = query.Where(x =>
-                        x.Title.ToLower().Contains(search) ||
-                        x.Author.ToLower().Contains(search));
-                }
-
-                var totalCount =  query.Count();
-
-                var items =  query
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-
-                // 🔥 ƏN VACİB HİSSƏ
-                var model = new PaginationList<Book>(items, totalCount, page, pageSize);
-
-                return View(model); // ✅ artıq PaginationList göndəririk
+                query = query.Where(x =>
+                    x.Title.ToLower().Contains(search) ||
+                    x.Author.ToLower().Contains(search));
             }
 
-            // DETAIL
-            [HttpGet]
-            public IActionResult Detail(int id)
-            {
-                var book = books.FirstOrDefault(x => x.Id == id);
+            var totalCount = query.Count();
 
-                if (book == null)
-                    return NotFound();
+            var items = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
+            // 🔥 ƏN VACİB HİSSƏ
+            var model = new PaginationList<Book>(items, totalCount, page, pageSize);
+
+            return View(model); // ✅ artıq PaginationList göndəririk
+        }
+
+        // DETAIL
+        [HttpGet]
+        public IActionResult Detail(int id)
+        {
+            var book = books.FirstOrDefault(x => x.Id == id);
+
+            if (book == null)
+                return NotFound();
+
+            return View(book);
+        }
+
+        // CREATE - GET
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // CREATE - POST
+        [HttpPost]
+        public IActionResult Create(Book book)
+        {
+            ModelState.Remove("About");
+
+            if (!ModelState.IsValid)
                 return View(book);
-            }
 
-            // CREATE - GET
-            [HttpGet]
-            public IActionResult Create()
-            {
-                return View();
-            }
+            book.Id = books.Any() ? books.Max(x => x.Id) + 1 : 1;
 
-            // CREATE - POST
-            [HttpPost]
-            public IActionResult Create(Book book)
-            {
-                if (!ModelState.IsValid)
-                    return View(book);
+            books.Add(book);
 
-                books.Add(book);
-               
-                return RedirectToAction("Index");
-            }
+            return RedirectToAction("Index");
+        }
 
         // DELETE
         public IActionResult Delete(int id)
@@ -189,45 +229,42 @@ namespace Book_Shop.Controllers
                 return NotFound();
 
             books.Remove(book);
-            
+
 
             return RedirectToAction("Index");
         }
 
         // EDIT - GET
         [HttpGet]
-            public IActionResult Edit(int id)
-            {
-                var book = books.FirstOrDefault(x => x.Id == id);
+        public IActionResult Edit(int id)
+        {
+            var book = books.FirstOrDefault(x => x.Id == id);
 
-                if (book == null)
-                    return NotFound();
+            if (book == null)
+                return NotFound();
 
-                return View(book);
-            }
-
-            // EDIT - POST
-            [HttpPost]
-            public IActionResult Edit(Book book)
-            {
-                var existing = books.FirstOrDefault(x => x.Id == book.Id);
-
-                if (existing == null)
-                    return NotFound();
-
-                existing.Title = book.Title;
-                existing.Author = book.Author;
-                existing.Price = book.Price;
-                existing.ImageUrl = book.ImageUrl;
-                existing.About = book.About;
-
-          
-
-                return RedirectToAction("Index");
-            }
+            return View(book);
         }
+
+        // EDIT - POST
+        [HttpPost]
+        public IActionResult Edit(Book book)
+        {
+            var existing = books.FirstOrDefault(x => x.Id == book.Id);
+
+            if (existing == null)
+                return NotFound();
+
+            existing.Title = book.Title;
+            existing.Author = book.Author;
+            existing.Price = book.Price;
+            existing.ImageUrl = book.ImageUrl;
+            existing.About = book.About;
+
+
+
+            return RedirectToAction("Index");
+        }
+
     }
-
-
-
-
+}
