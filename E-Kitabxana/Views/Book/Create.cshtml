@@ -1,0 +1,108 @@
+﻿@model E_Kitabxana.ViewModels.CreateBookViewModel
+
+@{
+    ViewData["Title"] = "Yeni Kitab Əlavə Et";
+}
+
+<div class="create-layout">
+    <div class="preview-col">
+        <div class="preview-card">
+            <div class="preview-img-wrap">
+                <img id="previewImg" src="" alt="" style="display:none;" />
+                <i class="bi bi-image preview-placeholder" id="previewPlaceholder"></i>
+            </div>
+            <div class="preview-body">
+                <p class="preview-title" id="previewTitle">Kitab adı görünəcək</p>
+                <p class="preview-author" id="previewAuthor">Müəllif adı</p>
+                <p class="preview-price" id="previewPrice">0 ₼</p>
+            </div>
+        </div>
+        <p class="preview-caption">Canlı önizləmə</p>
+    </div>
+
+    <div class="form-col">
+        <h1>Yeni Kitab Əlavə Et</h1>
+
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" class="form-control" id="titleInput" placeholder="Kitab adını daxil et" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Author"></label>
+                <input asp-for="Author" class="form-control" id="authorInput" placeholder="Müəllif adı" />
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Price"></label>
+                <input asp-for="Price" class="form-control" id="priceInput" placeholder="Qiymət" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ImageUrl"></label>
+                <input asp-for="ImageUrl" class="form-control" id="imageInput" placeholder="URL" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="About"></label>
+                <textarea asp-for="About" class="form-control" placeholder="Kitab haqqında"></textarea>
+                <span asp-validation-for="About" class="text-danger"></span>
+            </div>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-brand">Əlavə et</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Geri qayıt</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const titleInput = document.getElementById('titleInput');
+        const authorInput = document.getElementById('authorInput');
+        const priceInput = document.getElementById('priceInput');
+        const imageInput = document.getElementById('imageInput');
+
+        const previewTitle = document.getElementById('previewTitle');
+        const previewAuthor = document.getElementById('previewAuthor');
+        const previewPrice = document.getElementById('previewPrice');
+        const previewImg = document.getElementById('previewImg');
+        const previewPlaceholder = document.getElementById('previewPlaceholder');
+
+        titleInput.addEventListener('input', () => {
+            previewTitle.textContent = titleInput.value || 'Kitab adı görünəcək';
+        });
+
+        authorInput.addEventListener('input', () => {
+            previewAuthor.textContent = authorInput.value || 'Müəllif adı';
+        });
+
+        priceInput.addEventListener('input', () => {
+            previewPrice.textContent = (priceInput.value || '0') + ' ₼';
+        });
+
+        imageInput.addEventListener('input', () => {
+            const url = imageInput.value.trim();
+            if (url) {
+                previewImg.src = url;
+                previewImg.style.display = 'block';
+                previewPlaceholder.style.display = 'none';
+                previewImg.onerror = () => {
+                    previewImg.style.display = 'none';
+                    previewPlaceholder.style.display = 'flex';
+                };
+            } else {
+                previewImg.style.display = 'none';
+                previewPlaceholder.style.display = 'flex';
+            }
+        });
+    </script>
+}

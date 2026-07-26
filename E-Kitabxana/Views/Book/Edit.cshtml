@@ -1,0 +1,48 @@
+﻿@model E_Kitabxana.ViewModels.EditBookViewModel
+
+@{
+    ViewData["Title"] = "Kitabı Yenilə";
+}
+
+<div class="edit-form-wrap">
+    <h1 class="edit-title">Kitabı Yenilə</h1>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Title">Kitab adı</label>
+            <input asp-for="Title" class="form-control edit-input" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Author">Müəllif</label>
+            <input asp-for="Author" class="form-control edit-input" />
+            <span asp-validation-for="Author" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price">Qiymət</label>
+            <input asp-for="Price" class="form-control edit-input" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ImageUrl">Şəkil linki</label>
+            <input asp-for="ImageUrl" class="form-control edit-input" />
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="About">Haqqında</label>
+            <textarea asp-for="About" class="form-control edit-input"></textarea>
+            <span asp-validation-for="About" class="text-danger"></span>
+        </div>
+
+        <div class="edit-actions">
+            <button type="submit" class="btn-update">Yenilə</button>
+            <a asp-action="Index" class="btn-back">Geri</a>
+        </div>
+    </form>
+</div>
