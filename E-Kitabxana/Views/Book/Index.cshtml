@@ -2,7 +2,37 @@
 
 <h2>Yeni Nəşrlər</h2>
 <p>Kitab sayı: @Model.TotalCount</p>
+
+<form method="get" asp-action="Index" class="d-flex gap-2 mb-3">
+    <input type="hidden" name="search" value="@ViewData["CurrentSearch"]" />
+    <select name="sort" class="form-select" style="max-width: 250px;" onchange="this.form.submit()">
+        <option value="" selected="@(string.IsNullOrEmpty(ViewData["CurrentSort"]?.ToString()))">Ada görə (A-Z)</option>
+        <option value="title_desc" selected="@(ViewData["CurrentSort"]?.ToString() == "title_desc")">Ada görə (Z-A)</option>
+        <option value="price_asc" selected="@(ViewData["CurrentSort"]?.ToString() == "price_asc")">Qiymət (ucuzdan)</option>
+        <option value="price_desc" selected="@(ViewData["CurrentSort"]?.ToString() == "price_desc")">Qiymət (bahadan)</option>
+    </select>
+</form>
+
+<!-- ✅ BURAYA ELAVE ET -->
+<div class="mb-3">
+    <a href="@Url.Action("Index", new { search = ViewData["CurrentSearch"], sort = ViewData["CurrentSort"] })"
+       class="btn btn-outline-secondary btn-sm">Hamısı</a>
+
+    @if (ViewData["Categories"] is List<E_Kitabxana.Models.Category> categories)
+    {
+        @foreach (var cat in categories)
+        {
+            <a href="@Url.Action("Index", new { search = ViewData["CurrentSearch"], sort = ViewData["CurrentSort"], categoryId = cat.Id })"
+               class="btn @((ViewData["CurrentCategory"]?.ToString() == cat.Id.ToString()) ? "btn-primary" : "btn-outline-primary") btn-sm">
+                @cat.Name
+            </a>
+        }
+    }
+</div>
+<!-- ✅ QEDER -->
+
 <a asp-action="Create" class="btn btn-success mb-3">Yeni Kitab</a>
+
 <div class="row">
     @foreach (var book in Model.Items)
     {
@@ -17,23 +47,20 @@
                     <strong>@book.Price AZN</strong>
                     <div class="mt-2">
                         <a href="/Book/Detail/@book.Id" class="btn btn-info btn-sm">Ətraflı</a>
-                        <a asp-action="Delete" asp-route-id="@book.Id" class="btn btn-danger btn-sm">
-                            Sil
-                        </a>
-                        <a asp-action="Edit" asp-route-id="@book.Id" class="btn btn-warning btn-sm">
-                            Yenilə
-                        </a>
+                        <a asp-action="Delete" asp-route-id="@book.Id" class="btn btn-danger btn-sm">Sil</a>
+                        <a asp-action="Edit" asp-route-id="@book.Id" class="btn btn-warning btn-sm">Yenilə</a>
                     </div>
                 </div>
             </div>
         </div>
     }
 </div>
+
 <div class="mt-4 text-center">
     @for (int i = 1; i <= Model.TotalPages; i++)
     {
         <a class="btn btn-sm @(i == Model.PageIndex ? "btn-warning" : "btn-outline-warning")"
-           href="@Url.Action("Index", new { page = i })">
+           href="@Url.Action("Index", new { page = i, search = ViewData["CurrentSearch"], sort = ViewData["CurrentSort"], categoryId = ViewData["CurrentCategory"] })">
             @i
         </a>
     }

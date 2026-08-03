@@ -23,5 +23,6 @@ namespace E_Kitabxana.ViewModels
         [Required(ErrorMessage = "Kitab haqqında məlumat lazımdır")]
         [StringLength(1000)]
         public string About { get; set; } = "";
+        public int Stock { get; set; }
     }
 }

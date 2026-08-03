@@ -1,0 +1,25 @@
+﻿@model E_Kitabxana.Models.Book
+
+@{
+    ViewData["Title"] = "Kitabı Sil";
+}
+
+<div class="delete-confirm-wrap">
+    <h1>Kitabı Sil</h1>
+    <p>Aşağıdakı kitabı silmək istədiyinizə əminsiniz?</p>
+
+    <div class="card" style="max-width: 400px;">
+        <img src="@Model.ImageUrl" style="height:300px; object-fit:cover;" class="card-img-top" />
+        <div class="card-body">
+            <h5>@Model.Title</h5>
+            <p>@Model.Author</p>
+            <strong>@Model.Price AZN</strong>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-3">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Bəli, sil</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Ləğv et</a>
+    </form>
+</div>

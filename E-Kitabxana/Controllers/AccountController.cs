@@ -24,7 +24,8 @@ namespace E_Kitabxana.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new(ClaimTypes.Name, model.Username)
+                      new(ClaimTypes.Name, model.Username),
+                      new(ClaimTypes.NameIdentifier, model.Username)  
                 };
 
                 var identity = new ClaimsIdentity(
@@ -45,6 +46,7 @@ namespace E_Kitabxana.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
 

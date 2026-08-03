@@ -1,0 +1,10 @@
+﻿@model List<E_Kitabxana.Models.Category>
+
+<h2>Kateqoriyalar</h2>
+
+<ul>
+    @foreach (var cat in Model)
+    {
+        <li>@cat.Id — @cat.Name</li>
+    }
+</ul>

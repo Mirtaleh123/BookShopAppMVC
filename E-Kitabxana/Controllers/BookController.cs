@@ -16,11 +16,15 @@ namespace E_Kitabxana.Controllers
         }
 
         // LIST + SEARCH + PAGINATION
-        public async Task<IActionResult> Index(string? search, int page = 1)
+        public async Task<IActionResult> Index(string? search, string? sort,int? categoryId ,int page = 1)
         {
             const int pageSize = 8;
 
-            var query = _context.Books.AsNoTracking().AsQueryable();
+            var query = _context.Books.AsNoTracking().Where(b => !b.IsDeleted).AsQueryable();
+            if(categoryId.HasValue)
+            {
+                query = query.Where(b => b.CategoryId == categoryId.Value);
+            }
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -29,25 +33,40 @@ namespace E_Kitabxana.Controllers
                     b.Title!.ToLower().Contains(term) ||
                     b.Author.ToLower().Contains(term));
             }
-
+            query = sort switch
+            {
+                "price_asc" => query.OrderBy(b => b.Price),
+                "price_desc" => query.OrderByDescending(b => b.Price),
+                "title_desc" => query.OrderByDescending(b => b.Title),
+                _ => query.OrderBy(b => b.Title)
+            };
             var totalCount = await query.CountAsync();
 
             var items = await query
-                .OrderBy(b => b.Title)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             var model = new PaginationList<Book>(items, totalCount, page, pageSize);
+            ViewData["CurrentSort"] = sort;
+            ViewData["CurrentSearch"] = search;
+            ViewData["CurrentSearch"] = categoryId;
+             ViewData["Categories"] = _context.Categories.ToList(); 
 
             return View(model);
         }
-
+        [HttpGet]
+        public IActionResult Categories()
+        {
+            var categories = _context.Categories.ToList();
+            return View(categories);
+        }
         // DETAIL
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
-            var book = await _context.Books.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
+            var book = await _context.Books.AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == id && !b.IsDeleted);
             if (book == null)
                 return NotFound();
 
@@ -58,6 +77,8 @@ namespace E_Kitabxana.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            ViewBag.Categories = _context.Categories.ToList();
+
             return View();
         }
 
@@ -75,7 +96,9 @@ namespace E_Kitabxana.Controllers
                 Author = model.Author,
                 Price = model.Price,
                 ImageUrl = model.ImageUrl,
-                About = model.About
+                About = model.About,
+                Stock = model.Stock,
+                CategoryId = model.CategoryId
             };
 
             _context.Books.Add(book);
@@ -88,10 +111,9 @@ namespace E_Kitabxana.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id && !b.IsDeleted);
             if (book == null)
                 return NotFound();
-
             var model = new EditBookViewModel
             {
                 Id = book.Id,
@@ -99,7 +121,8 @@ namespace E_Kitabxana.Controllers
                 Author = book.Author,
                 Price = book.Price,
                 ImageUrl = book.ImageUrl,
-                About = book.About
+                About = book.About,
+                Stock = book.Stock  
             };
 
             return View(model);
@@ -116,7 +139,7 @@ namespace E_Kitabxana.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id && !b.IsDeleted);
             if (book == null)
                 return NotFound();
 
@@ -125,6 +148,7 @@ namespace E_Kitabxana.Controllers
             book.Price = model.Price;
             book.ImageUrl = model.ImageUrl;
             book.About = model.About;
+            book.Stock = model.Stock;
 
             await _context.SaveChangesAsync();
 
@@ -135,14 +159,15 @@ namespace E_Kitabxana.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var book = await _context.Books.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id);
+            var book = await _context.Books.AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == id && !b.IsDeleted);
             if (book == null)
                 return NotFound();
 
             return View(book);
         }
 
-        // DELETE - POST (əsl silmə əməliyyatı)
+        // DELETE - POST (soft delete)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -150,7 +175,7 @@ namespace E_Kitabxana.Controllers
             var book = await _context.Books.FindAsync(id);
             if (book != null)
             {
-                _context.Books.Remove(book);
+                book.IsDeleted = true;
                 await _context.SaveChangesAsync();
             }
 
@@ -164,7 +189,7 @@ namespace E_Kitabxana.Controllers
         {
             var result = await _context.Books
                 .AsNoTracking()
-                .Where(b => b.Price < 10)
+                .Where(b => b.Price < 10 && !b.IsDeleted)
                 .ToListAsync();
 
             return Json(result);
@@ -175,6 +200,7 @@ namespace E_Kitabxana.Controllers
         {
             var baha5 = await _context.Books
                 .AsNoTracking()
+                .Where(b => !b.IsDeleted)
                 .OrderByDescending(b => b.Price)
                 .Take(5)
                 .ToListAsync();
@@ -187,7 +213,7 @@ namespace E_Kitabxana.Controllers
         {
             var axtaris = await _context.Books
                 .AsNoTracking()
-                .Where(b => b.Title!.ToLower().Contains("sevgi"))
+                .Where(b => b.Title!.ToLower().Contains("sevgi") && !b.IsDeleted)
                 .ToListAsync();
 
             return Json(axtaris);

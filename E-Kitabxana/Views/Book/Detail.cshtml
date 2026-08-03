@@ -16,11 +16,35 @@
             <span class="detail-price">@Model.Price.ToString("0.00") AZN</span>
         </div>
 
+        <div class="mb-3">
+            @if (Model.Stock == 0)
+            {
+                <span class="badge bg-danger">Tükənib</span>
+            }
+            else if (Model.Stock <= 5)
+            {
+                <span class="badge bg-warning text-dark">Az qalıb — @Model.Stock ədəd</span>
+            }
+            else
+            {
+                <span class="badge bg-success">Stokda var — @Model.Stock ədəd</span>
+            }
+        </div>
+
         <div class="detail-actions">
             <a asp-controller="Book" asp-action="Read" asp-route-id="@Model.Id" class="btn-read">
                 <i class="bi bi-book"></i> Oxumağa başla
             </a>
             <a asp-action="Index" class="btn-outline-secondary">Geri qayıt</a>
+        </div>
+
+        <div style="margin-top: 12px;">
+            <form asp-controller="Cart" asp-action="Add" method="post">
+                <input type="hidden" name="bookId" value="@Model.Id" />
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-cart-plus"></i> Səbətə əlavə et
+                </button>
+            </form>
         </div>
     </div>
 </div>

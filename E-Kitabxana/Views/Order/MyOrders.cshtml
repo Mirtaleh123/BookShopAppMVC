@@ -1,0 +1,64 @@
+﻿@model List<E_Kitabxana.Models.Order>
+
+@{
+    ViewData["Title"] = "Sifarişlərim";
+}
+
+<h2>Sifarişlərim</h2>
+
+@if (!Model.Any())
+{
+    <p>Hələ heç bir sifarişiniz yoxdur.</p>
+}
+else
+{
+    @foreach (var order in Model)
+    {
+        <div class="card mb-4 p-3">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <strong>Sifariş #@order.Id</strong>
+                    <span class="ms-3 text-muted">@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</span>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="badge bg-warning text-dark">@order.Status</span>
+                    @if (order.Status == "Gözləyir")
+                    {
+                        <form asp-controller="Order" asp-action="Cancel" method="post">
+                            <input type="hidden" name="id" value="@order.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Ləğv et</button>
+                        </form>
+                    }
+                </div>
+            </div>
+
+            <table class="table mt-3">
+                <thead>
+                    <tr>
+                        <th>Kitab</th>
+                        <th>Qiymət</th>
+                        <th>Miqdar</th>
+                        <th>Cəm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in order.OrderItems)
+                    {
+                        <tr>
+                            <td>@item.Book.Title</td>
+                            <td>@item.Price.ToString("0.00") AZN</td>
+                            <td>@item.Quantity</td>
+                            <td>@((item.Price * item.Quantity).ToString("0.00")) AZN</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><strong>Ümumi:</strong></td>
+                        <td><strong>@order.TotalPrice.ToString("0.00") AZN</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    }
+}

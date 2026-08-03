@@ -41,6 +41,19 @@
                 <input asp-for="Price" class="form-control" id="priceInput" placeholder="Qiymət" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+            <div class="mb-3">
+                <label asp-for="CategoryId">Kateqoriya</label>
+                <select asp-for="CategoryId" class="form-select"
+                        asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))">
+                    <option value="">-- Kateqoriya seç --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Stock"></label>
+                <input asp-for="Stock" class="form-control" placeholder="Stok miqdarı" />
+                <span asp-validation-for="Stock" class="text-danger"></span>
+            </div>
 
             <div class="mb-3">
                 <label asp-for="ImageUrl"></label>

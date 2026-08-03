@@ -9,12 +9,23 @@ namespace E_Kitabxana.Data
             : base(options)
         {
         }
-
+        public DbSet<Cart> Carts { get; set; }
+      
         public DbSet<Book> Books { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Book>().Property(b => b.Price).HasPrecision(18, 2);
+            modelBuilder.Entity<Category>().HasData(
+              new Category { Id = 1, Name = "Tarix" },
+              new Category { Id = 2, Name = "Roman" },
+              new Category { Id = 3, Name = "Psixologiya" },
+              new Category { Id = 4, Name = "Fəlsəfə" },
+              new Category { Id = 5, Name = "Elm" }
+          );
 
             modelBuilder.Entity<Book>().HasData(
                 new Book { Id = 1, Title = "Elçibəy", Author = " Mehmet Necati Dəmircan", Price = 11.82m, ImageUrl = "https://static.insales-cdn.com/images/products/1/800/833495840/ELCIBEY_qapaq__1_.jpg", About = "Sənədli-bədii tarixi roman Azərbaycan nəşri üçün yenidən işlənib." },
@@ -29,6 +40,8 @@ namespace E_Kitabxana.Data
                 new Book { Id = 10, Title = "Двенадцатая планета", Author = "Захария Ситчин", Price = 11.34m, ImageUrl = "https://static.insales-cdn.com/images/products/1/1977/2855471033/7328593592.webp", About = "За многие годы исследований были обнаружены удивительные свидетельства о происхождении Земли." },
                 new Book { Id = 11, Title = "Üç yoldaş", Author = "Erix Mariya Remark", Price = 11.04m, ImageUrl = "https://static.insales-cdn.com/images/products/1/265/2904301833/UC_YOLDASH_qapaq.jpg", About = "Hadisələr Birinci Dünya müharibəsindən sonrakı Almaniyada cərəyan edir." }
             );
+            base.OnModelCreating(modelBuilder);
+          
         }
     }
 }
