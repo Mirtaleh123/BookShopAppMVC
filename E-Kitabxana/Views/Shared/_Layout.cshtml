@@ -12,29 +12,52 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm bg-white shadow-sm">
-            <div class="container-fluid">
+        <nav class="navbar navbar-expand-sm bg-white" style="border-bottom:1px solid #eee; padding: 8px 16px;">
+            <div class="container-fluid" style="gap:12px;">
+
                 <a class="navbar-brand" asp-controller="Book" asp-action="Index">
-                    <img src="https://static.insales-cdn.com/r/XA2GG-fJxr0/rs:fill-down:100:100:1/q:100/plain/files/1/2841/119417625/original/Logo_3__1_.png@png" alt="Logo" class="brand-logo">
+                    <img src="https://static.insales-cdn.com/r/XA2GG-fJxr0/rs:fill-down:100:100:1/q:100/plain/files/1/2841/119417625/original/Logo_3__1_.png@png"
+                         alt="Logo" class="brand-logo">
                 </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Book" asp-action="Index">Kitablar</a>
+                            <a class="nav-link" style="font-size:14px;font-weight:500;color:#1a1a1a;"
+                               asp-controller="Book" asp-action="Index">Kitablar</a>
                         </li>
-                        <form method="get" asp-controller="Book" asp-action="Index" class="d-flex flex-grow-1 ms-3">
-                            <input class="form-control search-input me-2" type="search" name="search" placeholder="Kitab axtar..." />
+                        <form method="get" asp-controller="Book" asp-action="Index"
+                              class="d-flex flex-grow-1 ms-3">
+                            <input class="form-control search-input me-2" type="search"
+                                   name="search" placeholder="Kitab axtar..." />
                             <button class="btn btn-brand">Axtar</button>
                         </form>
                     </ul>
-                    <ul class="navbar-nav align-items-center">
+
+                    <ul class="navbar-nav align-items-center gap-2 ms-3">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item d-flex align-items-center user-badge me-3">
-                                <i class="bi bi-person"></i>&nbsp;Salam, <strong>@User.Identity.Name</strong>
+                            <li class="nav-item">
+                                <a asp-controller="Cart" asp-action="Index"
+                                   style="color:#555;text-decoration:none;">
+                                    <i class="bi bi-cart" style="font-size:20px;"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Order" asp-action="MyOrders"
+                                   style="color:#555;text-decoration:none;">
+                                    <i class="bi bi-bag" style="font-size:20px;"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Admin" asp-action="Index"
+                                   style="width:34px;height:34px;border-radius:50%;background:#fdf1f1;border:1px solid #f4c9c8;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#d1332f;">
+                                    <i class="bi bi-person-circle" style="font-size:20px;"></i>
+                                </a>
                             </li>
                             <li class="nav-item">
                                 <form asp-action="Logout" asp-controller="Account" method="post">

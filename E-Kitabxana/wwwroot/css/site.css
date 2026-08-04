@@ -7,6 +7,18 @@ body {
     background-color: #ffffff;
 }
 
+.navbar {
+    padding: 8px 16px;
+}
+
+    .navbar .nav-link {
+        padding: 0 12px;
+    }
+
+.navbar {
+    border-bottom: none !important;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.08) !important;
+}
 .brand-logo {
     width: 52px;
     height: 52px;

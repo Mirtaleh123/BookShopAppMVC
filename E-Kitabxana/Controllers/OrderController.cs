@@ -17,7 +17,6 @@ namespace E_Kitabxana.Controllers
             _context = context;
         }
 
-        // Sifariş ver
         [HttpPost]
         public async Task<IActionResult> Checkout()
         {
@@ -51,23 +50,26 @@ namespace E_Kitabxana.Controllers
 
             return RedirectToAction("MyOrders");
         }
+
         [HttpPost]
         public async Task<IActionResult> Cancel(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var order = await _context.Orders
+                .Include(o => o.OrderItems)
                 .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
 
             if (order != null)
             {
-                order.Status = "Ləğv edildi";
+                _context.OrderItems.RemoveRange(order.OrderItems);
+                _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction("MyOrders");
         }
-        // Sifarişlərim
+
         public async Task<IActionResult> MyOrders()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -75,7 +77,7 @@ namespace E_Kitabxana.Controllers
             var orders = await _context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Book)
-                .Where(o => o.UserId == userId)
+                .Where(o => o.UserId == userId && o.Status != "Ləğv edildi")
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
 

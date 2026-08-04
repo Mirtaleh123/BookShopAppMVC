@@ -24,7 +24,8 @@ else
                     <span class="badge bg-warning text-dark">@order.Status</span>
                     @if (order.Status == "Gözləyir")
                     {
-                        <form asp-controller="Order" asp-action="Cancel" method="post">
+                        <form asp-controller="Order" asp-action="Cancel" method="post"
+                              onsubmit="return confirm('Sifariş #@order.Id ləğv edilsin?')">
                             <input type="hidden" name="id" value="@order.Id" />
                             <button type="submit" class="btn btn-danger btn-sm">Ləğv et</button>
                         </form>
